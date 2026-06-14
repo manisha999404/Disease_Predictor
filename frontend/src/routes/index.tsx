@@ -125,6 +125,33 @@ function Index() {
     setSymptoms((prev) => prev.filter((x) => x !== s));
   };
 
+  const findNearbyDoctor = () => {
+  if (!navigator.geolocation) {
+    window.open(
+      `https://www.google.com/maps/search/${encodeURIComponent(selected.specialist)}+near+me`,
+      "_blank"
+    );
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+      window.open(
+        `https://www.google.com/maps/search/${encodeURIComponent(selected.specialist)}/@${latitude},${longitude},14z`,
+        "_blank"
+      );
+    },
+    () => {
+      // If user denies, fall back to "near me"
+      window.open(
+        `https://www.google.com/maps/search/${encodeURIComponent(selected.specialist)}+near+me`,
+        "_blank"
+      );
+    }
+  );
+};
+
   const analyze = async () => {
     if (symptoms.length === 0) return;
     setAnalyzing(true);
@@ -573,14 +600,13 @@ function Index() {
                         <p className="text-sm text-muted-foreground">Based on your symptom profile</p>
                       </div>
                     </div>
-                    <a
-                      href={`https://www.google.com/maps/search/${encodeURIComponent(selected.specialist)}+near+me`}
-                      target="_blank" rel="noreferrer"
-                      className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-medium transition hover:scale-105"
-                      style={{ background: `linear-gradient(135deg, ${ACCENT[selectedIdx] ?? "#8B5CF6"}, #60A5FA)`, boxShadow: `0 0 20px ${ACCENT[selectedIdx] ?? "#8B5CF6"}55` }}
-                    >
-                      <MapPin size={16} /> Find Nearby Doctor
-                    </a>
+                    <button
+  onClick={findNearbyDoctor}
+  className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-medium transition hover:scale-105"
+  style={{ background: `linear-gradient(135deg, ${ACCENT[selectedIdx] ?? "#8B5CF6"}, #60A5FA)`, boxShadow: `0 0 20px ${ACCENT[selectedIdx] ?? "#8B5CF6"}55` }}
+>
+  <MapPin size={16} /> Find Nearby Doctor
+</button>
                   </motion.div>
                   <RiskMeter risk={selected.risk} />
                 </section>
