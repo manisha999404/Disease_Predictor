@@ -1,0 +1,192 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: #050816;
+  --background-2: #0A1025;
+  --background-3: #101935;
+  --foreground: oklch(0.97 0.01 250);
+  --card: rgba(16, 25, 53, 0.55);
+  --card-foreground: oklch(0.97 0.01 250);
+  --primary: #8B5CF6;
+  --primary-foreground: #ffffff;
+  --secondary: #60A5FA;
+  --secondary-foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.06);
+  --muted-foreground: oklch(0.72 0.03 250);
+  --accent: #22D3EE;
+  --accent-foreground: #050816;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --border: rgba(139, 92, 246, 0.18);
+  --ring: #8B5CF6;
+}
+
+@layer base {
+  /* Apply border color to everything EXCEPT canvas elements */
+  *:not(canvas) { border-color: var(--color-border); }
+
+  /* Nuclear reset for canvas — Tailwind's * selector must not bleed through */
+  canvas {
+    display: block;
+    border: 0 none transparent !important;
+    outline: 0 none transparent !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    /* Prevent Tailwind base from adding border-width */
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  html, body {
+    background-color: #050816;
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(139,92,246,0.25), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 30%, rgba(34,211,238,0.12), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 0% 80%, rgba(96,165,250,0.12), transparent 60%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+}
+
+@utility glass {
+  background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(34,211,238,0.04));
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+@utility glow-primary {
+  box-shadow: 0 0 30px rgba(139,92,246,0.5), 0 0 60px rgba(139,92,246,0.25);
+}
+
+@utility text-gradient {
+  background: linear-gradient(135deg, #fff 0%, #c4b5fd 50%, #67e8f9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* AuraAssistant canvas — belt-and-suspenders on top of the base reset */
+.aura-canvas,
+.aura-canvas:focus,
+.aura-canvas:focus-visible,
+.aura-canvas:active,
+.aura-canvas:hover {
+  border: 0 none transparent !important;
+  outline: 0 none transparent !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+@keyframes aura-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-18px) scale(1.02); }
+}
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes drift {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(30px, -40px); }
+  100% { transform: translate(0,0); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-aura-float { animation: aura-float 6s ease-in-out infinite; }
+.animate-aura-pulse { animation: aura-pulse 3s ease-in-out infinite; }
+.animate-drift { animation: drift 18s ease-in-out infinite; }
+.animate-twinkle { animation: twinkle 4s ease-in-out infinite; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #050816; }
+::-webkit-scrollbar-thumb { background: linear-gradient(#8B5CF6, #60A5FA); border-radius: 10px; }
+
+/* ── Bandage-cross cursor ── */
+*, *::before, *::after {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect x='4' y='11' width='20' height='6' rx='3' fill='white' stroke='%237c3aed' stroke-width='1' transform='rotate(-45 14 14)'/%3E%3Crect x='4' y='11' width='20' height='6' rx='3' fill='%23e9d5ff' stroke='%237c3aed' stroke-width='1' transform='rotate(45 14 14)'/%3E%3Ccircle cx='14' cy='14' r='2.5' fill='%23fff' stroke='%237c3aed' stroke-width='1'/%3E%3C/svg%3E") 14 14, crosshair !important;
+}
+
+a, button, [role="button"], label, select,
+input[type="checkbox"], input[type="radio"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect x='4' y='11' width='20' height='6' rx='3' fill='%2367e8f9' stroke='%230891b2' stroke-width='1' transform='rotate(-45 14 14)'/%3E%3Crect x='4' y='11' width='20' height='6' rx='3' fill='%2367e8f9' stroke='%230891b2' stroke-width='1' transform='rotate(45 14 14)'/%3E%3Ccircle cx='14' cy='14' r='2.5' fill='%23fff' stroke='%230891b2' stroke-width='1'/%3E%3C/svg%3E") 14 14, pointer !important;
+}
+
+input[type="text"], input:not([type]), textarea {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect x='4' y='11' width='20' height='6' rx='3' fill='%23e9d5ff' stroke='%237c3aed' stroke-width='1' transform='rotate(-45 14 14)'/%3E%3Crect x='4' y='11' width='20' height='6' rx='3' fill='%23e9d5ff' stroke='%237c3aed' stroke-width='1' transform='rotate(45 14 14)'/%3E%3Ccircle cx='14' cy='14' r='2.5' fill='%23fff' stroke='%237c3aed' stroke-width='1'/%3E%3C/svg%3E") 14 14, text !important;
+}
+
+/* ── CSS typewriter (ChatBubble) ── */
+@keyframes aura-typing {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+@keyframes aura-caret {
+  0%, 100% { border-color: transparent; }
+  50%       { border-color: rgba(255,255,255,0.4); }
+}
+
+/* contentEditable symptom input placeholder */
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+[contenteditable]:focus {
+  outline: none;
+}

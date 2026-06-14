@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.env.*
+.workspace
+bun.lock
+package-lock.json
