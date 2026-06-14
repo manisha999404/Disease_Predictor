@@ -125,10 +125,12 @@ function Index() {
     setSymptoms((prev) => prev.filter((x) => x !== s));
   };
 
-  const findNearbyDoctor = () => {
-  if (!navigator.geolocation) {
+  const [userLocation, setUserLocation] = useState("");
+
+const findNearbyDoctor = () => {
+  if (userLocation.trim()) {
     window.open(
-      `https://www.google.com/maps/search/${encodeURIComponent(selected.specialist)}+near+me`,
+      `https://www.google.com/maps/search/${encodeURIComponent(selected!.specialist)}+in+${encodeURIComponent(userLocation)}`,
       "_blank"
     );
     return;
@@ -138,14 +140,13 @@ function Index() {
     (pos) => {
       const { latitude, longitude } = pos.coords;
       window.open(
-        `https://www.google.com/maps/search/${encodeURIComponent(selected.specialist)}/@${latitude},${longitude},14z`,
+        `https://www.google.com/maps/search/${encodeURIComponent(selected!.specialist)}/@${latitude},${longitude},14z`,
         "_blank"
       );
     },
     () => {
-      // If user denies, fall back to "near me"
       window.open(
-        `https://www.google.com/maps/search/${encodeURIComponent(selected.specialist)}+near+me`,
+        `https://www.google.com/maps/search/${encodeURIComponent(selected!.specialist)}+near+me`,
         "_blank"
       );
     }
@@ -581,33 +582,86 @@ function Index() {
                 {/* Specialist + Risk */}
                 <section className="max-w-6xl mx-auto mt-24 grid lg:grid-cols-2 gap-6">
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="glass rounded-3xl p-8 relative overflow-hidden"
-                  >
-                    <div className="text-xs text-accent flex items-center gap-1 mb-2">
-                      <Stethoscope size={12} /> RECOMMENDED SPECIALIST
-                    </div>
-                    <div className="flex items-center gap-5 mt-4">
-                      <div
-                        className="w-20 h-20 rounded-2xl flex items-center justify-center shrink-0"
-                        style={{ background: `linear-gradient(135deg, ${ACCENT[selectedIdx] ?? "#8B5CF6"}, #22D3EE)`, boxShadow: `0 0 30px ${ACCENT[selectedIdx] ?? "#8B5CF6"}66` }}
-                      >
-                        <Stethoscope className="text-white" size={36} />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold">{selected.specialist}</h3>
-                        <p className="text-sm text-muted-foreground">Based on your symptom profile</p>
-                      </div>
-                    </div>
-                    <button
-  onClick={findNearbyDoctor}
-  className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-medium transition hover:scale-105"
-  style={{ background: `linear-gradient(135deg, ${ACCENT[selectedIdx] ?? "#8B5CF6"}, #60A5FA)`, boxShadow: `0 0 20px ${ACCENT[selectedIdx] ?? "#8B5CF6"}55` }}
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  className="glass rounded-3xl p-8 relative overflow-hidden"
 >
-  <MapPin size={16} /> Find Nearby Doctor
-</button>
-                  </motion.div>
+  <div className="text-xs text-accent flex items-center gap-1 mb-2">
+    <Stethoscope size={12} /> RECOMMENDED SPECIALIST
+  </div>
+  <div className="flex items-center gap-5 mt-4">
+    <div
+      className="w-20 h-20 rounded-2xl flex items-center justify-center shrink-0"
+      style={{ background: `linear-gradient(135deg, ${ACCENT[selectedIdx] ?? "#8B5CF6"}, #22D3EE)`, boxShadow: `0 0 30px ${ACCENT[selectedIdx] ?? "#8B5CF6"}66` }}
+    >
+      <Stethoscope className="text-white" size={36} />
+    </div>
+    <div>
+      <h3 className="text-2xl font-bold">{selected.specialist}</h3>
+      <p className="text-sm text-muted-foreground">Based on your symptom profile</p>
+    </div>
+  </div>
+
+  {/* Location input */}
+  <div className="mt-6 flex gap-2">
+  <div
+    contentEditable
+    suppressContentEditableWarning
+    data-placeholder="Enter your city (e.g. Sivasagar)"
+    onInput={(e) => setUserLocation(e.currentTarget.textContent ?? "")}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") e.preventDefault();
+    }}
+    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-primary/60 transition empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground empty:before:pointer-events-none"
+  />
+  {userLocation && (
+    <button
+      onClick={() => {
+        setUserLocation("");
+        const div = document.querySelector("[data-placeholder='Enter your city (e.g. Sivasagar)']") as HTMLElement;
+        if (div) div.textContent = "";
+      }}
+      className="px-3 rounded-xl glass hover:bg-white/10 transition text-muted-foreground hover:text-white"
+    >
+      <X size={14} />
+    </button>
+  )}
+</div>
+  <p className="text-xs text-muted-foreground mt-1.5 ml-1">
+    {userLocation ? `Searching near "${userLocation}"` : "Or use your device location below"}
+  </p>
+  <div className="mt-3 flex items-start gap-2 px-3 py-2.5 rounded-xl border border-amber-500/20 bg-amber-500/5">
+  <AlertTriangle size={13} className="text-amber-400 mt-0.5 shrink-0" />
+  <p className="text-xs text-amber-300/80 leading-relaxed">
+    For the most accurate results, we recommend using{" "}
+    <span className="text-amber-300 font-medium">your current location</span> instead of manually entering a city.
+    Manual city search may miss nearby specialists in surrounding areas.
+  </p>
+</div>
+
+  {/* Buttons */}
+  <div className="mt-4 flex flex-wrap gap-3">
+    <button
+      onClick={findNearbyDoctor}
+      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-medium transition hover:scale-105"
+      style={{ background: `linear-gradient(135deg, ${ACCENT[selectedIdx] ?? "#8B5CF6"}, #60A5FA)`, boxShadow: `0 0 20px ${ACCENT[selectedIdx] ?? "#8B5CF6"}55` }}
+    >
+      <MapPin size={16} /> {userLocation ? "Search by City" : "Use My Location"}
+    </button>
+
+    {!userLocation && (
+      <button
+        onClick={() => {
+          const city = prompt("Enter your city name:");
+          if (city) setUserLocation(city);
+        }}
+        className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-medium glass hover:bg-white/10 transition"
+      >
+        <MapPin size={16} /> Enter City Manually
+      </button>
+    )}
+  </div>
+</motion.div>
                   <RiskMeter risk={selected.risk} />
                 </section>
               </motion.div>
