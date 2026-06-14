@@ -269,7 +269,7 @@ export function AuraAssistant({
       return base + w1 + w2 + w3 + breathe + squish;
     }
 
-    function getPoints(time, n = 120, scale = 1.0) {
+    function getPoints(time, n = 80, scale = 1.0) {
       const pts = [];
       for (let i = 0; i < n; i++) {
         const a = (i / n) * Math.PI * 2;
@@ -291,7 +291,12 @@ export function AuraAssistant({
       ctx.closePath();
     }
 
-    function drawFrame() {
+    let frameCount = 0;
+
+function drawFrame() {
+  rafRef.current = requestAnimationFrame(drawFrame);
+  frameCount++;
+  if (frameCount % 2 !== 0) return; // ~30fps
       ctx.clearRect(0, 0, W, H);
 
       const t = tRef.current;
@@ -437,7 +442,6 @@ export function AuraAssistant({
       }
 
       tRef.current += thinking ? 0.032 : 0.024;
-      rafRef.current = requestAnimationFrame(drawFrame);
     }
 
     rafRef.current = requestAnimationFrame(drawFrame);
