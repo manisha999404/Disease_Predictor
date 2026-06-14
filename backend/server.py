@@ -10,20 +10,25 @@ from gemini_helper import get_disease_details
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # allow requests from the frontend (e.g. http://localhost:3000)
+CORS(app)
 
-# --- Load dataset ---
-df = pd.read_csv('Databases/final_diseases_with_symptoms_enhanced.csv')
-df['Symptoms'] = df['Symptoms'].apply(lambda x: literal_eval(x) if isinstance(x, str) else [])
+# --- Lazy loaded globals ---
+df = None
+vectorizer = None
+symptom_vectors = None
 
-# --- TF-IDF Model ---
-vectorizer = TfidfVectorizer()
-symptom_vectors = vectorizer.fit_transform(df['Symptoms'].apply(lambda x: ' '.join(x)))
+def load_model():
+    global df, vectorizer, symptom_vectors
+    if df is None:
+        df = pd.read_csv('Databases/final_diseases_with_symptoms_enhanced.csv')
+        df['Symptoms'] = df['Symptoms'].apply(lambda x: literal_eval(x) if isinstance(x, str) else [])
+        vectorizer = TfidfVectorizer()
+        symptom_vectors = vectorizer.fit_transform(df['Symptoms'].apply(lambda x: ' '.join(x)))
 
 def predict_diseases(user_symptoms, top_n=5):
     user_vector = vectorizer.transform([' '.join(user_symptoms)])
     similarities = cosine_similarity(user_vector, symptom_vectors).flatten()
-    adjusted_scores = similarities * (1 - 0.2 * df['IsRare'])  # rare disease penalty
+    adjusted_scores = similarities * (1 - 0.2 * df['IsRare'])
 
     ranked_indices = adjusted_scores.argsort()[::-1][:top_n]
     results = []
@@ -32,7 +37,6 @@ def predict_diseases(user_symptoms, top_n=5):
         disease = df.iloc[idx]['Disease Name']
         prob = adjusted_scores[idx] / adjusted_scores[ranked_indices].sum()
 
-        # --- Get details from Gemini ---
         details = get_disease_details(disease)
 
         results.append({
@@ -49,6 +53,7 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    load_model()
     data = request.json
     user_input = data.get('symptoms', '')
     user_symptoms = [s.strip().lower() for s in user_input.split(',') if s.strip()]
