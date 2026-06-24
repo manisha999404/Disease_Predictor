@@ -10,13 +10,11 @@ from gemini_helper import get_disease_details
 load_dotenv()
 
 app = Flask(__name__)
-
 CORS(app, origins=[
     "https://disease-predictor-bice.vercel.app",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ])
-
 # --- Lazy loaded globals ---
 df = None
 vectorizer = None
