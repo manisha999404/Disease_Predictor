@@ -2,7 +2,7 @@
 
 > Predict diseases from symptoms, powered by ML and Gemini AI.
 
-**Live Demo:** [disease-predictor-bice.vercel.app](https://disease-predictor-bice.vercel.app/) &nbsp;·&nbsp; **Repo:** [github.com/manisha999404/Disease_Predictor](https://github.com/manisha999404/Disease_Predictor)
+**Live Demo:** [https://disease-predictor-tan.vercel.app/](https://disease-predictor-tan.vercel.app/) &nbsp;·&nbsp; **Repo:** [github.com/manisha999404/Disease_Predictor](https://github.com/manisha999404/Disease_Predictor)
 
 ---
 
