@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 # --- Configure Gemini ---
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-3.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 # --- Cache to avoid duplicate API calls ---
 CACHE = {}
