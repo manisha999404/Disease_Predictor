@@ -8,13 +8,12 @@ from ast import literal_eval
 from gemini_helper import get_disease_details
 
 load_dotenv()
+import os
+
+print("GEMINI_API_KEY =", os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
-CORS(app, origins=[
-    "https://disease-predictor-bice.vercel.app",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-])
+CORS(app)
 # --- Lazy loaded globals ---
 df = None
 vectorizer = None

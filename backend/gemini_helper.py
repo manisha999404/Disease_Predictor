@@ -3,6 +3,8 @@ import os
 import json
 import traceback
 
+from dotenv import load_dotenv
+load_dotenv()
 # --- Configure Gemini ---
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-3.5-flash")

@@ -159,6 +159,7 @@ const findNearbyDoctor = () => {
     setResults(null);
     setSelectedIdx(0);
     try {
+      console.log("API URL =", import.meta.env.VITE_API_URL);
       const res = await fetch(`${import.meta.env.VITE_API_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
